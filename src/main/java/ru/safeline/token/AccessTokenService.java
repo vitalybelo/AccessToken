@@ -299,9 +299,7 @@ public class AccessTokenService {
 
 
     /**
-     * Извлекает все значения realm ролей, которые были назначены пользователю.
-     *
-     * @return строковый список realm ролей
+     * @return извлекает из токена список всех значений realm ролей, которые были назначены пользователю.
      */
     public List<String> getRealmRoles() {
         return assign() ? streamRealmRoles() : Collections.emptyList();
@@ -309,7 +307,7 @@ public class AccessTokenService {
 
 
     /**
-     * @return извлекает все значения client ролей, которые были назначены пользователю
+     * @return извлекает из токена список всех значений ролей сервисов, которые предоставлены пользователю
      */
     public List<String> getClientRoles() {
         return assign() ? streamClientRoles() : Collections.emptyList();
@@ -349,7 +347,7 @@ public class AccessTokenService {
 
 
     /**
-     * @return извлекает realm роли и client роли - возвращает общий список ролей
+     * @return извлекает из токена полный список ролей (realm и clients), которые были назначены пользователю
      */
     public List<String> getAllRoles() {
 
@@ -370,6 +368,29 @@ public class AccessTokenService {
      */
     public boolean isAllowed(String roleString) {
         return assign() && getClientRoles().contains(roleString);
+    }
+
+
+    /**
+     * Выполняет проверку на наличие у текущего пользователя хотя бы одной роли из заданного параметром
+     * списка. Проверка выполняется среди всех ролей сервисов, назначенных пользователю.
+     *
+     * @param roles требуемый список ролей
+     * @return true если хотя-бы одна роль из списка требуемых имеется у пользователя
+     */
+    public boolean anyMatch(List<String> roles) {
+        if (assign()) {
+            return streamClientRoles().stream().anyMatch(roles::contains);
+        }
+        return false;
+    }
+
+
+    public boolean allMatch(List<String> roles) {
+        if (assign()) {
+            return new HashSet<>(roles).containsAll(streamClientRoles());
+        }
+        return false;
     }
 
 
