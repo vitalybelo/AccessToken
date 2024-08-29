@@ -372,8 +372,8 @@ public class AccessTokenService {
 
 
     /**
-     * Выполняет проверку на наличие у текущего пользователя хотя бы одной роли из заданного параметром
-     * списка. Проверка выполняется среди всех ролей сервисов, назначенных пользователю.
+     * Выполняет проверку на наличие у текущего пользователя в токене хотя бы одной роли из требуемого списка.
+     * Проверка выполняется среди всех ролей сервисов, назначенных пользователю.
      *
      * @param roles требуемый список ролей
      * @return true если хотя-бы одна роль из списка требуемых имеется у пользователя
@@ -386,13 +386,37 @@ public class AccessTokenService {
     }
 
 
+    /**
+     * Выполняет проверку на наличие у текущего пользователя в токене всех требуемых ролей.
+     * Проверка выполняется среди всех ролей сервисов, назначенных пользователю.
+     *
+     * @param roles требуемый список ролей
+     * @return true только если у пользователя имеются все требуемые роли
+     */
+    @SuppressWarnings("SimplifyStreamApiCallChains")
     public boolean allMatch(List<String> roles) {
         if (assign()) {
-            return new HashSet<>(roles).containsAll(streamClientRoles());
+            List<String> allRoles = streamClientRoles();
+            return roles.stream().allMatch(allRoles::contains);
         }
         return false;
     }
 
+
+    /**
+     * Выполняет проверку на отсутствие у текущего пользователя в токене всех требуемых ролей.
+     * Проверка выполняется среди всех ролей сервисов, назначенных пользователю.
+     *
+     * @param roles требуемый список ролей
+     * @return true только если у пользователя отсутствуют все требуемые роли
+     */
+    public boolean noneMatch(List<String> roles) {
+        if (assign()) {
+            List<String> allRoles = streamClientRoles();
+            return roles.stream().noneMatch(allRoles::contains);
+        }
+        return false;
+    }
 
     /**
      * Выполняет проверку на отсутствие у пользователя требуемой роли только в списке ролей сервисов
