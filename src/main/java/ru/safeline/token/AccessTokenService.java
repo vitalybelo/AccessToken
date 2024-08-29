@@ -18,6 +18,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.*;
 
@@ -43,7 +44,7 @@ public class AccessTokenService {
      *
      * @return true если security context доступен
      */
-    private boolean isSpringContext() {
+    public boolean isSpringContext() {
         return Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .isPresent();
@@ -459,7 +460,7 @@ public class AccessTokenService {
      * @param tokenString строка с токеном доступа keycloak, без префикса Bearer
      * @return экземпляр класса AccessToken, или null в случае ошибки
      */
-    private AccessToken parseAccessToken(String tokenString) {
+    public AccessToken parseAccessToken(String tokenString) {
 
         AccessToken accessToken = null;
         if (!StringUtils.isBlank(tokenString)) {
@@ -486,7 +487,7 @@ public class AccessTokenService {
      * @param principal класс java.security поступающий на вход контроллера spring boot frameworks
      * @return экземпляр класса JwtAuthenticationToken или null
      */
-    private JwtAuthenticationToken getJwtToken(Principal principal) {
+    public JwtAuthenticationToken getJwtToken(Principal principal) {
         if (principal instanceof JwtAuthenticationToken) {
             return (JwtAuthenticationToken) principal;
         }
@@ -500,7 +501,7 @@ public class AccessTokenService {
      * @param principal класс java.security поступающий на вход контроллера spring boot frameworks
      * @return экземпляр класса OidcUser или null
      */
-    private OidcUser getOidcUser(Principal principal) {
+     public OidcUser getOidcUser(Principal principal) {
         if (principal instanceof Authentication) {
             Authentication authentication = (Authentication) principal; // не убирать
             if (authentication.getPrincipal() instanceof OidcUser) {
@@ -512,15 +513,26 @@ public class AccessTokenService {
 
 
     /**
-     * Извлекает из контекста сервлета экземпляр класса HttpServletRequest
-     *
-     * @return экземпляр класса HttpServletRequest
+     * @return извлекает из атрибутов контекста сервлета экземпляр класса HttpServletRequest
      */
-    private @Nullable HttpServletRequest getHttpServletRequest() {
+    public @Nullable HttpServletRequest getHttpServletRequest() {
 
         if (Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .map(ServletRequestAttributes::getRequest).isPresent()) {
             return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        }
+        return null;
+    }
+
+
+    /**
+     * @return извлекает из атрибутов контекста сервлета экземпляр класса HttpServletResponse
+     */
+    public @Nullable HttpServletResponse getHttpServletResponse() {
+
+        if (Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .map(ServletRequestAttributes::getRequest).isPresent()) {
+            return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         }
         return null;
     }
