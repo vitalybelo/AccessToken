@@ -1,0 +1,32 @@
+{
+  "properties": [
+    {
+      "name": "mo.eca.role.mapping.client-id",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "mo.eca.role.mapping.method-url",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "mo.eca.role.mapping.enable",
+      "type": "java.lang.boolean"
+    },
+    {
+      "name": "mo.eca.datasource.url",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "mo.eca.datasource.username",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "mo.eca.datasource.password",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "mo.eca.datasource.driver-class-name",
+      "type": "java.lang.String"
+    }
+  ]
+}
