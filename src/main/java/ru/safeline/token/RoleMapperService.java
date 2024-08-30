@@ -40,8 +40,9 @@ public class RoleMapperService {
     private final KeycloakTokenService keycloakTokenService;
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final Map<String, String> roleMethodsMap = new HashMap<>();
 
+    @Getter
+    private final Map<String, String> roleMethodsMap = new HashMap<>();
     @Getter
     private boolean isRoleMethodsMapped = false;
 

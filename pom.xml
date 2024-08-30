@@ -14,7 +14,7 @@
 
     <groupId>ru.safeline</groupId>
     <artifactId>access-token</artifactId>
-    <version>2.8.0</version>
+    <version>2.8.1</version>
     <packaging>jar</packaging>
     <name>access-token</name>
     <description>Keycloak OAuth2 Access Token Library</description>

@@ -2,6 +2,7 @@ package ru.safeline.token;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -43,9 +44,12 @@ public class RoleMapperHikariService {
     @Value("${mo.eca.role.mapping.enable:false}")
     private boolean isRoleMappingEnable;
 
-
     private final AccessTokenService accessTokenService;
+
+    @Getter
     private final Map<String, String> roleMethodsMap = new HashMap<>();
+    @Getter
+    private boolean isRoleMethodsMapped = false;
 
 
     /**
@@ -72,6 +76,7 @@ public class RoleMapperHikariService {
             Map<String, String> roleMap = selectMethodRoleMappingFromDatasource();
             if (roleMap == null) {
                 log.info(">>> Не удалось прочитать карту сопоставлений для методов сервиса: \"{}\"", clientId);
+                isRoleMethodsMapped = false;
                 return;
             }
             // запрос выполнен успешно, карта сопоставлений получена, теперь проверим наличие в ней сопоставлений
@@ -79,6 +84,7 @@ public class RoleMapperHikariService {
             if (!roleMap.isEmpty()) {
                 roleMethodsMap.putAll(roleMap);
                 log.info(">>> Карта авторизации инициализирована, количество загруженных сопоставлений = {}", roleMethodsMap.size());
+                isRoleMethodsMapped = true;
                 return;
             }
             log.info(">>> Карта авторизации пустая, не существует сопоставлений для методов сервиса: \"{}\"", clientId);
