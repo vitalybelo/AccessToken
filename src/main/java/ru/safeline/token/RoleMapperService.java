@@ -118,12 +118,11 @@ public class RoleMapperService {
      */
     public boolean isAllowed(@NotNull String methodName) {
 
-        if (isRoleMappingEnable) {
-            if (!roleMethodsMap.isEmpty()) {
+        if (isRoleMappingEnable && !roleMethodsMap.isEmpty()) {
                 String role = roleMethodsMap.get(methodName);
                 if (StringUtils.isNotBlank(role)) return accessTokenService.isAllowedAbout(role);
             }
-        }
+
         return true;
     }
 

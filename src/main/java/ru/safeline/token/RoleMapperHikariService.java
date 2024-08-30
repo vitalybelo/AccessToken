@@ -25,12 +25,12 @@ import java.util.Map;
  * @author Vitaliy Belotserkovskii, 31.07.2024
  */
 @Slf4j
-@Component("token_Checker")
+@Component("tokenChecker2")
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class RoleMapperHikariService {
 
-    @Value("${mo.eca.role.mapping.client_id:''}")
+    @Value("${mo.eca.role.mapping.client-id:''}")
     private String clientId;
     @Value("${mo.eca.datasource.url:''}")
     private String keycloakDatasourceUrl;
@@ -100,11 +100,9 @@ public class RoleMapperHikariService {
      */
     public boolean isAllowed(@NotNull String methodName) {
 
-        if (isRoleMappingEnable) {
-            if (!roleMethodsMap.isEmpty()) {
-                String role = roleMethodsMap.get(methodName);
-                if (StringUtils.isNotBlank(role)) return accessTokenService.isAllowedAbout(role);
-            }
+        if (isRoleMappingEnable && !roleMethodsMap.isEmpty()) {
+            String role = roleMethodsMap.get(methodName);
+            if (StringUtils.isNotBlank(role)) return accessTokenService.isAllowedAbout(role);
         }
         return true;
     }

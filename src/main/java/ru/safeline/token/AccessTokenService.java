@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -462,22 +463,20 @@ public class AccessTokenService {
      */
     public AccessToken parseAccessToken(String tokenString) {
 
-        AccessToken accessToken = null;
         if (!StringUtils.isBlank(tokenString)) {
             Base64.Decoder decoder = Base64.getUrlDecoder();
             String[] chunks = tokenString.split("\\.");
             if (chunks.length > 1) {
-                //String header = new String(decoder.decode(chunks[0]));
                 String payload = new String(decoder.decode(chunks[1]));
                 try {
                     ObjectMapper objectMapper = new ObjectMapper();
-                    accessToken = objectMapper.readValue(payload, AccessToken.class);
+                    return objectMapper.readValue(payload, AccessToken.class);
                 } catch (Exception e) {
                     log.info(">>> Ошибка парсинга токена доступа: {}", e.getMessage());
                 }
             }
         }
-        return accessToken;
+        return null;
     }
 
 
@@ -519,7 +518,10 @@ public class AccessTokenService {
 
         if (Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .map(ServletRequestAttributes::getRequest).isPresent()) {
-            return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+            if (attributes instanceof ServletRequestAttributes) {
+                return ((ServletRequestAttributes) attributes).getRequest();
+            }
         }
         return null;
     }
@@ -532,7 +534,10 @@ public class AccessTokenService {
 
         if (Optional.ofNullable((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .map(ServletRequestAttributes::getRequest).isPresent()) {
-            return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+            RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+            if (attributes instanceof ServletRequestAttributes) {
+                return ((ServletRequestAttributes) attributes).getResponse();
+            }
         }
         return null;
     }

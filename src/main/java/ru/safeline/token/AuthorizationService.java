@@ -18,9 +18,9 @@ import java.security.Principal;
 @SuppressWarnings("unused")
 public class AuthorizationService {
 
-    private final static String CLAIM_USER_ID = "sub";
-    private final static String CLAIM_CLIENT_ID = "azp";
-    private final static String CLAIM_USERNAME = "preferred_username";
+    private static final String CLAIM_USER_ID = "sub";
+    private static final String CLAIM_CLIENT_ID = "azp";
+    private static final String CLAIM_USERNAME = "preferred_username";
 
 
     /**
