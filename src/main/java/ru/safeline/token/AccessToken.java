@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Класс описывающий сущность токена доступа пользователя keycloak. Поля по необходимости можно добавлять.
+ *
  * @author Vitalii Belotserkovskii, 16.10.2023
  */
 @Getter
@@ -88,7 +89,8 @@ public class AccessToken {
             try {
                 this.maxSessions = Integer.parseInt(maxSessions);
                 return;
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
         }
         this.maxSessions = 0;
     }
@@ -99,7 +101,8 @@ public class AccessToken {
             try {
                 this.maxIdleTime = Integer.parseInt(maxIdleTime);
                 return;
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
         }
         this.maxIdleTime = 0;
     }
