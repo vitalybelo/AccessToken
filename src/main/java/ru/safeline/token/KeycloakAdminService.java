@@ -42,33 +42,33 @@ public class KeycloakAdminService {
         Map<String, Set<String>> attributes = new HashMap<>();
         if (StringUtils.isNotBlank(clientId)) { // проверка на пустой входной параметр
 
-            List<ClientRepresentation> clientApplicants = realmResource.clients().findByClientId(clientId);
-            if (CollectionUtils.isNotEmpty(clientApplicants)) { // проверяем наличие сервисов с похожими именами
+            try {
+                List<ClientRepresentation> clientApplicants = realmResource.clients().findByClientId(clientId);
+                if (CollectionUtils.isNotEmpty(clientApplicants)) { // проверяем наличие сервисов с похожими именами
 
-                ClientRepresentation client = clientApplicants.stream()
-                        .filter(c -> c.getClientId().equals(clientId))
-                        .findFirst()
-                        .orElse(null);
+                    ClientRepresentation client = clientApplicants.stream()
+                            .filter(c -> c.getClientId().equals(clientId))
+                            .findFirst()
+                            .orElse(null);
 
-                if (client != null && client.isServiceAccountsEnabled()) { // нужный сервис найден
+                    if (client != null && client.isServiceAccountsEnabled()) { // нужный сервис найден
 
-                    String serviceAccount = "service-account-" + clientId;
-                    List<UserRepresentation> userApplicants = realmResource.users().searchByUsername(serviceAccount, true);
+                        String serviceAccount = "service-account-" + clientId;
+                        List<UserRepresentation> userApplicants = realmResource.users().searchByUsername(serviceAccount, true);
 
-                    if (CollectionUtils.isNotEmpty(userApplicants)) { // системный пользователь сервиса типа найден
-                        UserRepresentation user = userApplicants.stream()
-                                .filter(u -> u.getUsername().equals(serviceAccount))
-                                .findFirst()
-                                .orElse(null);
+                        if (CollectionUtils.isNotEmpty(userApplicants)) { // системный пользователь сервиса типа найден
+                            UserRepresentation user = userApplicants.stream()
+                                    .filter(u -> u.getUsername().equals(serviceAccount))
+                                    .findFirst()
+                                    .orElse(null);
 
-                        if (user != null) { // "останется только один" и дальше музыка из фильма HighLander (Queen)
+                            if (user != null) { // "останется только один" и дальше музыка из фильма HighLander (Queen)
 
-                            UserResource userResource = realmResource.users().get(user.getId());
-                            List<GroupRepresentation> userGroups = userResource.groups(0, Integer.MAX_VALUE, false);
+                                UserResource userResource = realmResource.users().get(user.getId());
+                                List<GroupRepresentation> userGroups = userResource.groups(0, Integer.MAX_VALUE, false);
 
-                            if (CollectionUtils.isNotEmpty(userGroups)) {
-                                // все группы пользователя найдены - начинаем собирать атрибуты
-                                try {
+                                if (CollectionUtils.isNotEmpty(userGroups)) {
+                                    // все группы пользователя найдены - начинаем собирать атрибуты
                                     userGroups.stream()
                                             .map(GroupRepresentation::getAttributes)
                                             .forEach(map -> map.forEach((key, value)
@@ -80,13 +80,13 @@ public class KeycloakAdminService {
                                         attributes.forEach((key, value) -> resultMap.put(key, new ArrayList<>(value)));
                                         return resultMap;
                                     }
-                                } catch (Exception e) {
-                                    log.error(">>>> getClientRabbitRights >>>> {}", e.getMessage());
                                 }
                             }
                         }
                     }
                 }
+            } catch (Exception e) {
+                log.error(">>>> getClientRabbitRights >>>> {}", e.getMessage());
             }
         }
         return new HashMap<>();
