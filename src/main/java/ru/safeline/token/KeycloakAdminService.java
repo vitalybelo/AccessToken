@@ -22,6 +22,7 @@ import java.util.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("unused")
 public class KeycloakAdminService {
 
     private final RealmResource realmResource;
