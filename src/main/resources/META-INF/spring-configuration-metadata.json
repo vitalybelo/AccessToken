@@ -27,6 +27,23 @@
     {
       "name": "mo.eca.datasource.driver-class-name",
       "type": "java.lang.String"
+    },
+    {
+      "name": "mo.eca.keycloak.server.url",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "mo.eca.keycloak.realm",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "mo.eca.keycloak.admin.client_id",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "mo.eca.keycloak.admin.client_secret",
+      "type": "java.lang.String"
     }
   ]
 }
+
